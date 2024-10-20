@@ -1,14 +1,15 @@
 package com.dailycodebuffer.transaction.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dailycodebuffer.transaction.entity.Department;
 import com.dailycodebuffer.transaction.entity.Employee;
 import com.dailycodebuffer.transaction.repository.DepartmentRepository;
 import com.dailycodebuffer.transaction.repository.EmployeeRepository;
 import com.dailycodebuffer.transaction.vo.EmployeeRequestVO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 public class EmployeeService {
@@ -19,7 +20,7 @@ public class EmployeeService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED )
     public String saveEmployee(EmployeeRequestVO employeeRequestVO) {
 
         Department department  = new Department();
@@ -28,8 +29,10 @@ public class EmployeeService {
 
         Long departmentId = departmentRepository.save(department)
                             .getDepartmentId();
+        
+        //if(true) throw new RuntimeException();
 
-        Employee  employee = null;
+        Employee  employee = new Employee();
 
         employee.setEmpName(employeeRequestVO.getEmpName());
         employee.setEmail(employeeRequestVO.getEmail());
